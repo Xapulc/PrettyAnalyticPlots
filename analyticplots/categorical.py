@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 __all__ = [
     "bar_plot"
@@ -11,78 +12,74 @@ class _CategoricalPlotter(object):
                  data: pd.DataFrame,
                  x: str = None,
                  y: str = None,
-                 hue: str = None,
-                 x_label: str = None,
-                 y_label: str = None,
-                 hue_label: str = None,
-                 figsize: tuple = None,
-                 title: str = None):
-        plt.style.use('seaborn')
+                 figsize: tuple = None):
+        plt.style.use(["seaborn", {"legend.frameon": True}])
 
-        self.data = data
-        self.x_label = x_label if x_label is not None else x
-        self.y_label = y_label if y_label is not None else y
-        self.hue_label = hue_label if hue_label is not None else hue
+        self.data = data.copy()
         self.figsize = figsize
-        self.title = title
 
         if isinstance(data, pd.DataFrame):
-            for col in [x, y, hue]:
+            for col in [x, y]:
                 assert col is None or col in data.columns, f"Column {col} is not in data."
             self.x = x
             self.y = y
-            self.hue = hue
         else:
             raise ValueError(f"Parameter 'data' has wrong type: {type(data)}. "
                              f"pandas.DataFrame is needed.")
 
-    def bar_plot(self,
-                 ax: plt.Axes = None,
-                 orient="v",
-                 logx=False,
-                 logy=False):
-        if self.hue is not None:
-            if self.x is None:
-                self.x = "_index"
-                self.data[self.x] = self.data.index
-            self.data.set_index(self.hue, drop=True, inplace=True)
+    def plot(self,
+             kind: str = None,
+             ax: plt.Axes = None,
+             aggfunc: object = np.mean,
+             logx: bool = False,
+             logy: bool = False):
+        pivot_table = pd.pivot_table(self.data, index=self.x, values=self.y, aggfunc=aggfunc)
+        pivot_table.plot(ax=ax, y=self.y, kind=kind,
+                       figsize=self.figsize,
+                       logx=logx, logy=logy, legend=True)
+        return ax
 
-            pivot_table = self.data.pivot_table(index=self.x, columns=self.hue, values=self.y, aggfunc="sum")
-            pivot_table.plot(ax=ax, stacked=True,
-                             kind="bar" if orient == "v" else "barh",
-                             title=self.title, figsize=self.figsize,
-                             logx=logx, logy=logy, legend=True)
+    def grouped_plot(self,
+                     kind: str = None,
+                     ax: plt.Axes = None,
+                     hue: str = None,
+                     norm: bool = False,
+                     aggfunc: object = np.mean,
+                     logx: bool = False,
+                     logy: bool = False):
+        if self.x is None:
+            self.x = "_index"
+            self.data[self.x] = self.data.index
+        self.data.set_index(hue, drop=True, inplace=True)
 
+        pivot_table = self.data.pivot_table(index=self.x, columns=hue, values=self.y,
+                                            aggfunc=aggfunc)
+        if norm:
+            pivot_table = pivot_table.divide(pivot_table.sum(axis=1), axis=0)
+
+        pivot_table.plot(ax=ax, stacked=True, kind=kind,
+                         figsize=self.figsize,
+                         logx=logx, logy=logy, legend=True)
+
+        if norm:
+            plt.legend(bbox_to_anchor=(1, 1))
         else:
-            self.data.plot(ax=ax, x=self.x, y=self.y,
-                           kind="bar" if orient == "v" else "barh",
-                           title=self.title, figsize=self.figsize,
-                           logx=logx, logy=logy, legend=True)
-
-        ax.set_xlabel(self.x_label)
-        ax.set_ylabel(self.y_label)
+            plt.legend(loc="best")
         return ax
 
 
-def bar_plot(data=None,
-             x=None,
-             y=None,
-             hue=None,
-             ax=None,
-             x_label=None,
-             y_label=None,
-             hue_label=None,
-             fig_shape=None,
-             title=None,
-             orient="v",
-             logx=False,
-             logy=False,
-             ):
-    plotter = _CategoricalPlotter(data, x, y, hue, x_label, y_label, hue_label,
-                                  fig_shape, title)
+def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
+             ax=None, figsize=None, orient="v", aggfunc=np.mean,
+             logx=False, logy=False):
+    plotter = _CategoricalPlotter(data, x, y, figsize)
 
     if ax is None:
         ax = plt.gca()
 
-    plotter.bar_plot(ax, orient, logx, logy)
+    if hue is None:
+        plotter.plot(kind="bar" if orient == "v" else "barh",
+                     ax=ax, aggfunc=aggfunc, logx=logx, logy=logy)
+    else:
+        plotter.grouped_plot(kind="bar" if orient == "v" else "barh",
+                             ax=ax, hue=hue, norm=norm, logx=logx, logy=logy)
     return ax
