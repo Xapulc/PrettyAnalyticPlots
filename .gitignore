@@ -2,3 +2,6 @@ venv
 .idea
 .ipynb_checkpoints
 __pycache__
+build
+dist
+PrettyAnalyticPlots.egg-info
