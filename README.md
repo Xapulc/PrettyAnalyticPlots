@@ -1,43 +1,28 @@
-# Pretty Analityc Plots
+# Pretty Analytic Plots
 
 This project simplifies the construction of charts
 typical of an analyst.
 
-## Getting Started
+## Installing
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Install package:
+```
+python3 project_path/setup.py install
+```
+Dependencies will be installed along with the package.
 
 ### Some pretty plots
 
-What things you need to install the software and how to install them
-
+If you want to plot normalized bar plot, 
+you can write
 ```
-Give examples
+from seaborn import load_dataset
+flights = load_dataset("flights", index_col=False)
+bar_plot(flights, ax=ax, x="year", y="passengers", hue="month", norm=True)
 ```
+![Plot](examples/img.png)
 
 You can find more usage examples in [examples](examples).
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
@@ -49,7 +34,9 @@ Add additional notes about how to deploy this on a live system
 
 * **Victor Kharlamov** - *Developer* - [Xapulc](https://github.com/Xapulc)
 
-See also the list of [contributors](https://github.com/Xapulc/PrettyAnalyticPlots/contributors) who participated in this project.
+See also the list of 
+[contributors](https://github.com/Xapulc/PrettyAnalyticPlots/contributors) 
+who participated in this project.
 
 ## License
 
@@ -57,6 +44,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* Thanks to [seaborn](https://github.com/mwaskom/seaborn)
+for architectural solutions used in this project.
