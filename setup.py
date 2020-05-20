@@ -6,7 +6,7 @@ DESCRIPTION = "PrettyAnalyticPlots: special plots for analysis"
 
 DISTNAME = "PrettyAnalyticPlots"
 MAINTAINER = "Victor Kharlamov"
-MAINTAINER_EMAIL = 'vi.kharlamov@gmail.com'
+MAINTAINER_EMAIL = 'vi.v.kharlamov@gmail.com'
 DOWNLOAD_URL = 'https://github.com/Xapulc/PrettyAnalyticPlots'
 VERSION = '0.1.0'
 PYTHON_REQUIRES = ">=3.6"
