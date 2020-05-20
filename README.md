@@ -18,7 +18,7 @@ you can write
 ```
 from seaborn import load_dataset
 flights = load_dataset("flights", index_col=False)
-bar_plot(flights, ax=ax, x="year", y="passengers", hue="month", norm=True)
+bar_plot(flights, x="year", y="passengers", hue="month", norm=True)
 ```
 ![Plot](examples/img.png)
 

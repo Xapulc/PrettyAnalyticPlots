@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 __all__ = [
-    "bar_plot"
+    "bar_plot",
+    "time_bar_plot"
 ]
 
 
@@ -33,6 +34,9 @@ class _CategoricalPlotter(object):
              aggfunc: object = np.mean,
              logx: bool = False,
              logy: bool = False):
+        if self.x is None:
+            self.x = "_index"
+            self.data[self.x] = self.data.index
         pivot_table = pd.pivot_table(self.data, index=self.x, values=self.y, aggfunc=aggfunc)
         pivot_table.plot(ax=ax, y=self.y, kind=kind,
                        figsize=self.figsize,
@@ -67,6 +71,13 @@ class _CategoricalPlotter(object):
             plt.legend(loc="best")
         return ax
 
+    def calculate_pretty_ticks(self, ticks, axissize):
+        if len(ticks[0]) > axissize:
+            step_size = int(len(ticks[0]) // axissize)
+        else:
+            step_size = 1
+        return ticks[0][::-step_size][::-1], ticks[1][::-step_size][::-1]
+
 
 def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
              ax=None, figsize=None, orient="v", aggfunc=np.mean,
@@ -82,4 +93,37 @@ def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
     else:
         plotter.grouped_plot(kind="bar" if orient == "v" else "barh",
                              ax=ax, hue=hue, norm=norm, logx=logx, logy=logy)
+    return ax
+
+
+def time_bar_plot(data=None, x=None, y=None, hue=None, timestep=None,
+                  norm=False, ax=None, figsize=None, xlabelformat="%d-%m",
+                  aggfunc=np.mean, logx=False, logy=False):
+    data = data.copy()
+    if x is None:
+        x = "_index"
+        data[x] = pd.to_datetime(data.index.to_series()) \
+                    .dt.to_period(timestep) \
+                    .apply(lambda period: period.start_time)
+    else:
+        data[x] = pd.to_datetime(data[x]) \
+                    .dt.to_period(timestep) \
+                    .apply(lambda period: period.start_time)
+    plotter = _CategoricalPlotter(data, x, y, figsize)
+
+    if ax is None:
+        ax = plt.gca()
+
+    if hue is None:
+        plotter.plot(kind="bar",
+                     ax=ax, aggfunc=aggfunc, logx=logx, logy=logy)
+    else:
+        plotter.grouped_plot(kind="bar",
+                             ax=ax, hue=hue, norm=norm, logx=logx, logy=logy)
+
+    ticks, labels = plotter.calculate_pretty_ticks(plt.xticks(), plt.rcParams.get('figure.figsize')[0])
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(map(lambda period: pd.Timestamp(period.get_text()).strftime(xlabelformat),
+                           labels), rotation=0 if "y" not in xlabelformat.lower() else 45)
+    ax.set_xlabel("time")
     return ax
