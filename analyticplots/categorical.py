@@ -102,13 +102,13 @@ def time_bar_plot(data=None, x=None, y=None, hue=None, timestep=None,
     data = data.copy()
     if x is None:
         x = "_index"
-        data[x] = pd.to_datetime(data.index.to_series()) \
-                    .dt.to_period(timestep) \
-                    .apply(lambda period: period.start_time)
+        data[x] = pd.to_datetime(data.index).tz_localize(None) \
+                    .to_period(timestep) \
+                    .start_time
     else:
-        data[x] = pd.to_datetime(data[x]) \
-                    .dt.to_period(timestep) \
-                    .apply(lambda period: period.start_time)
+        data[x] = pd.to_datetime(data[x]).tz_localize(None) \
+                    .to_period(timestep) \
+                    .start_time
     plotter = _CategoricalPlotter(data, x, y, figsize)
 
     if ax is None:
