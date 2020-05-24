@@ -6,16 +6,18 @@ DESCRIPTION = "PrettyAnalyticPlots: special plots for analysis"
 
 DISTNAME = "PrettyAnalyticPlots"
 MAINTAINER = "Victor Kharlamov"
-MAINTAINER_EMAIL = 'vi.kharlamov@gmail.com'
-DOWNLOAD_URL = 'https://github.com/Xapulc/PrettyAnalyticPlots'
-VERSION = '0.1.0'
+MAINTAINER_EMAIL = "vi.v.kharlamov@gmail.com"
+LICENSE = "BSD (3-clause)"
+DOWNLOAD_URL = "https://github.com/Xapulc/PrettyAnalyticPlots"
+VERSION = "0.1.0a"
 PYTHON_REQUIRES = ">=3.6"
 
 INSTALL_REQUIRES = [
-    'numpy>=1.13.3',
-    'scipy>=1.0.1',
-    'pandas>=0.22.0',
-    'matplotlib>=2.1.2',
+    "numpy>=1.13.3",
+    "scipy>=1.0.1",
+    "pandas>=0.22.0",
+    "matplotlib>=2.1.2",
+    "seaborn>=0.10.1"
 ]
 
 
@@ -50,6 +52,7 @@ if __name__ == "__main__":
         maintainer=MAINTAINER,
         maintainer_email=MAINTAINER_EMAIL,
         description=DESCRIPTION,
+        license=LICENSE,
         version=VERSION,
         download_url=DOWNLOAD_URL,
         python_requires=PYTHON_REQUIRES,
