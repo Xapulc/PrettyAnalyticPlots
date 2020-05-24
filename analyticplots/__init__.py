@@ -1,3 +1,3 @@
-from .categorical import *
+from .plot_functions import *
 
-__version__ = "0.1.0a"
+__version__ = "0.1.0b"
