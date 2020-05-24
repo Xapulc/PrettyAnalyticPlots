@@ -9,7 +9,7 @@ MAINTAINER = "Victor Kharlamov"
 MAINTAINER_EMAIL = "vi.v.kharlamov@gmail.com"
 LICENSE = "BSD (3-clause)"
 DOWNLOAD_URL = "https://github.com/Xapulc/PrettyAnalyticPlots"
-VERSION = "0.1.0a"
+VERSION = "0.1.0b"
 PYTHON_REQUIRES = ">=3.6"
 
 INSTALL_REQUIRES = [
