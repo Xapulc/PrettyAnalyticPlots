@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 
-def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
+def bar_plot(data, y, x=None, hue=None, norm=False,
              ax=None, figsize=None, orient="v", aggfunc=np.mean,
              logx=False, logy=False):
     """
@@ -43,7 +43,7 @@ def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
         If dict is passed, the key is column to aggregate and value is function or list of functions.
     :param logx: bool, optional.
         If true, x-axis will be logarithmic.
-    :param logy:
+    :param logy: bool, optional
         If true, y-axis will be logarithmic.
 
     Returns
@@ -56,16 +56,16 @@ def bar_plot(data=None, x=None, y=None, hue=None, norm=False,
     if ax is None:
         ax = plt.gca()
 
+    kind = "bar" if orient == "v" else "barh"
     if hue is None:
-        plotter.plot(kind="bar" if orient == "v" else "barh",
-                     ax=ax, aggfunc=aggfunc, logx=logx, logy=logy)
+        plotter.plot(kind=kind, ax=ax, aggfunc=aggfunc, logx=logx, logy=logy)
     else:
-        plotter.grouped_plot(kind="bar" if orient == "v" else "barh", stacked=True,
+        plotter.grouped_plot(kind=kind, stacked=True,
                              ax=ax, hue=hue, norm=norm, logx=logx, logy=logy)
     return ax
 
 
-def time_bar_plot(data=None, x=None, y=None, hue=None, period=None,
+def time_bar_plot(data, y, x=None, hue=None, period=None,
                   norm=False, ax=None, figsize=None, xlabelformat="%d-%m",
                   aggfunc=np.mean, logx=False, logy=False):
     """
@@ -100,7 +100,7 @@ def time_bar_plot(data=None, x=None, y=None, hue=None, period=None,
         If dict is passed, the key is column to aggregate and value is function or list of functions.
     :param logx: bool, optional.
         If true, x-axis will be logarithmic.
-    :param logy:
+    :param logy: bool, optional.
         If true, y-axis will be logarithmic.
 
     Returns
@@ -132,13 +132,13 @@ def time_bar_plot(data=None, x=None, y=None, hue=None, period=None,
 
     ticks, labels = plotter.calculate_pretty_ticks(plt.xticks(), plt.rcParams.get('figure.figsize')[0])
     ax.set_xticks(ticks)
-    ax.set_xticklabels(map(lambda period: pd.Timestamp(period.get_text()).strftime(xlabelformat),
-                           labels), rotation=0 if "y" not in xlabelformat.lower() else 45)
+    ax.set_xticklabels(map(lambda period: pd.Timestamp(period.get_text()).strftime(xlabelformat), labels),
+                       rotation=0 if "y" not in xlabelformat.lower() else 45)
     ax.set_xlabel("time")
     return ax
 
 
-def line_plot(data=None, x=None, y=None, hue=None, norm=False,
+def line_plot(data, y, x=None, hue=None, norm=False,
               stacked=False, ax=None, figsize=None, aggfunc=np.mean,
               logx=False, logy=False):
     """
@@ -163,15 +163,13 @@ def line_plot(data=None, x=None, y=None, hue=None, norm=False,
         Axes to plot on, otherwise uses current axes.
     :param figsize: tuple, optional.
         Tuple (width, height) in inches.
-    :param orient: str, optional.
-        Orient of plot. Can equal "v" or "h".
     :param aggfunc: function, list of functions, dict, default numpy.mean, optional.
         If list of functions passed, the resulting pivot table will have hierarchical columns
         whose top level are the function names (inferred from the function objects themselves).
         If dict is passed, the key is column to aggregate and value is function or list of functions.
     :param logx: bool, optional.
         If true, x-axis will be logarithmic.
-    :param logy:
+    :param logy: bool, oprional.
         If true, y-axis will be logarithmic.
 
     Returns
@@ -192,7 +190,7 @@ def line_plot(data=None, x=None, y=None, hue=None, norm=False,
     return ax
 
 
-def time_line_plot(data=None, x=None, y=None, hue=None, period=None, stacked=False,
+def time_line_plot(data, y, x=None, hue=None, period=None, stacked=False,
                    norm=False, ax=None, figsize=None, xlabelformat="%d-%m",
                    aggfunc=np.mean, logx=False, logy=False):
     """
@@ -229,7 +227,7 @@ def time_line_plot(data=None, x=None, y=None, hue=None, period=None, stacked=Fal
         If dict is passed, the key is column to aggregate and value is function or list of functions.
     :param logx: bool, optional.
         If true, x-axis will be logarithmic.
-    :param logy:
+    :param logy: bool, optional.
         If true, y-axis will be logarithmic.
 
     Returns
@@ -261,7 +259,7 @@ def time_line_plot(data=None, x=None, y=None, hue=None, period=None, stacked=Fal
 
     ticks, labels = plotter.calculate_pretty_ticks(plt.xticks(), plt.rcParams.get('figure.figsize')[0])
     ax.set_xticks(ticks)
-    ax.set_xticklabels(map(lambda period: pd.Timestamp(period.get_text()).strftime(xlabelformat),
-                           labels), rotation=0 if "y" not in xlabelformat.lower() else 45)
+    ax.set_xticklabels(map(lambda period: pd.Timestamp(period.get_text()).strftime(xlabelformat), labels),
+                       rotation=0 if "y" not in xlabelformat.lower() else 45)
     ax.set_xlabel("time")
     return ax
